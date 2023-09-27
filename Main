@@ -1,0 +1,53 @@
+package com.harshit.finepixel; // Replace with your actual package name
+
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class FinePixelPlugin extends JavaPlugin implements Listener {
+
+    @Override
+    public void onEnable() {
+        getServer().getPluginManager().registerEvents(this, this);
+        getLogger().info("FinePixel plugin created by Harshit has been enabled!");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("FinePixel plugin created by Harshit has been disabled.");
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (cmd.getName().equalsIgnoreCase("givemyrod")) {
+                player.getInventory().addItem(createFineRod());
+                player.sendMessage("You've received the Fine Rod!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getItem() != null && event.getItem().isSimilar(createFineRod())) {
+            if (event.getAction().toString().contains("RIGHT_CLICK_AIR") || event.getAction().toString().contains("RIGHT_CLICK_BLOCK")) {
+                event.getPlayer().getWorld().strikeLightning(event.getPlayer().getLocation());
+            }
+        }
+    }
+
+    public ItemStack createFineRod() {
+        ItemStack fineRod = new ItemStack(Material.FISHING_ROD);
+        fineRod.getItemMeta().setDisplayName("Fine Strike");
+        return fineRod;
+    }
+}
